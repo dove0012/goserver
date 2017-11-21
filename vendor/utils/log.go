@@ -5,7 +5,11 @@ import (
 	"runtime"
 )
 
-func FailOnError(err error, msg string) {
+var Log = &Mlog{}
+
+type Mlog struct {}
+
+func (log *Mlog)FailOnError(err error, msg string) {
 	if err != nil {
 		fmt.Printf("%s: %s\n", msg, err)
 		runtime.Goexit()

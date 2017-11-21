@@ -3,6 +3,7 @@ package amqp
 import (
 	rabbitmq "github.com/streadway/amqp"
 	"errors"
+	"utils"
 )
 
 type Amqp struct {
@@ -41,27 +42,19 @@ func (amqp *Amqp) Close() {
 	}
 }
 
-func (amqb *Amqp) initMq() error {
+func (amqb *Amqp) initMq() {
 	var err error
 	if amqb.Url == "" {
-		return errors.New("amqp url is empty")
+		utils.Log.FailOnError(errors.New("amqp url is empty"), "error")
 	}
 	amqb.conn, err = rabbitmq.Dial(amqb.Url)
-	if err != nil {
-		return err
-	}
+	utils.Log.FailOnError(err, "rabbitmq.Dial error")
 	amqb.ch, err = amqb.conn.Channel()
-	if err != nil {
-		return err
-	}
-	return nil
+	utils.Log.FailOnError(err, "conn.Channel error")
 }
 
-func (amqp *Amqp) Receive() (<-chan rabbitmq.Delivery, error) {
-	err := amqp.initMq()
-	if err != nil {
-		return nil, err
-	}
+func (amqp *Amqp) Receive() (<-chan rabbitmq.Delivery) {
+	amqp.initMq()
 
 	q, err := amqp.ch.QueueDeclare(
 		amqp.Qd.Name,      // name
@@ -71,6 +64,7 @@ func (amqp *Amqp) Receive() (<-chan rabbitmq.Delivery, error) {
 		amqp.Qd.NoWait,    // no-wait
 		amqp.Qd.Arguments, // arguments
 	)
+	utils.Log.FailOnError(err, "ch.QueueDeclare error")
 
 	msgs, err := amqp.ch.Consume(
 		q.Name,           // queue
@@ -81,6 +75,7 @@ func (amqp *Amqp) Receive() (<-chan rabbitmq.Delivery, error) {
 		amqp.C.NoWait,    // no-wait
 		amqp.C.Arguments, // args
 	)
+	utils.Log.FailOnError(err, "ch.Consume error")
 
-	return msgs, nil
+	return msgs
 }
