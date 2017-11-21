@@ -18,22 +18,25 @@ var Reckon = &cli.Server{
 }
 
 func runReckon() {
+	cfg, err := cli.NewCfg("config.ini")
+	utils.FailOnError(err, "goconfig NewCfg error")
+	cfg.Section = NAME_RECKON
+	mq_url, err := cfg.GetString("mq_url")
+	utils.FailOnError(err, "goconfig GetString error")
+
 	mq := amqp.NewAmqp()
-	mq.Url = "amqp://guest:guest@192.168.186.129:5672"
+	mq.Url = mq_url
 	mq.Qd.Name = NAME_RECKON
 	msgs, err := mq.Receive()
 	defer mq.Close()
+	utils.FailOnError(err, "mq receive error")
 
-	if err != nil {
-		utils.FailOnError(err, "mq receive error")
-	} else {
-		fmt.Printf(" [*] Waiting for messages. To exit press CTRL+C")
-		for d := range msgs {
-			go func() {
-				fmt.Printf("Received a message: %s", d.Body)
-				fmt.Printf("Done")
-				d.Ack(false)
-			}()
-		}
+	fmt.Printf(" [*] Waiting for messages. To exit press CTRL+C")
+	for d := range msgs {
+		go func() {
+			fmt.Printf("Received a message: %s", d.Body)
+			fmt.Printf("Done")
+			d.Ack(false)
+		}()
 	}
 }

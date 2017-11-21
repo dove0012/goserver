@@ -8,7 +8,7 @@ type Cfg struct {
 }
 
 func NewCfg(fileName string) (*Cfg, error) {
-	cfg, err := goconfig.LoadConfigFile(fileName)
+	cfg, err := goconfig.LoadConfigFile("config/" + fileName)
 	if err != nil {
 		return nil, err
 	}
