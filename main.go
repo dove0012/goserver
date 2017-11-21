@@ -12,7 +12,7 @@ func main() {
 	app.Name = "goserver"
 	app.Usage = "run services"
 	app.Version = APP_VER
-	app.Servers = []cli.Server{
+	app.Servers = []*cli.Server{
 		ser.Reckon,
 	}
 	app.Run()

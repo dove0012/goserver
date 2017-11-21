@@ -12,7 +12,7 @@ type App struct {
 	Name    string
 	Usage   string
 	Version string
-	Servers []Server
+	Servers []*Server
 	Wg      sync.WaitGroup
 }
 
@@ -41,7 +41,7 @@ func (app *App) rebootSer(name string) {
 	}
 }
 
-func (app *App) runSer(server Server)  {
+func (app *App) runSer(server *Server) {
 	go func() {
 		if server.Reboot {
 			defer func() {

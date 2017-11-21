@@ -9,7 +9,7 @@ import (
 
 const NAME_RECKON = "reckon"
 
-var Reckon = cli.Server{
+var Reckon = &cli.Server{
 	Name:       NAME_RECKON,
 	Usage:      "Bigame reckon server",
 	Reboot:     true,
