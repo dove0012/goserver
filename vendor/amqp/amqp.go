@@ -45,12 +45,12 @@ func (amqp *Amqp) Close() {
 func (amqb *Amqp) initMq() {
 	var err error
 	if amqb.Url == "" {
-		utils.Log.FailOnError(errors.New("amqp url is empty"), "error")
+		utils.Log.Error2Exit(errors.New("amqp url is empty"), "error")
 	}
 	amqb.conn, err = rabbitmq.Dial(amqb.Url)
-	utils.Log.FailOnError(err, "rabbitmq.Dial error")
+	utils.Log.Error2Exit(err, "rabbitmq.Dial error")
 	amqb.ch, err = amqb.conn.Channel()
-	utils.Log.FailOnError(err, "conn.Channel error")
+	utils.Log.Error2Exit(err, "conn.Channel error")
 }
 
 func (amqp *Amqp) Receive() (<-chan rabbitmq.Delivery) {
@@ -64,7 +64,7 @@ func (amqp *Amqp) Receive() (<-chan rabbitmq.Delivery) {
 		amqp.Qd.NoWait,    // no-wait
 		amqp.Qd.Arguments, // arguments
 	)
-	utils.Log.FailOnError(err, "ch.QueueDeclare error")
+	utils.Log.Error2Exit(err, "ch.QueueDeclare error")
 
 	msgs, err := amqp.ch.Consume(
 		q.Name,           // queue
@@ -75,7 +75,7 @@ func (amqp *Amqp) Receive() (<-chan rabbitmq.Delivery) {
 		amqp.C.NoWait,    // no-wait
 		amqp.C.Arguments, // args
 	)
-	utils.Log.FailOnError(err, "ch.Consume error")
+	utils.Log.Error2Exit(err, "ch.Consume error")
 
 	return msgs
 }
