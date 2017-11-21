@@ -33,7 +33,7 @@ func (app *App) Run() {
 	app.Wg.Wait()
 }
 
-func (app *App) Reboot(name string) {
+func (app *App) rebootSer(name string) {
 	for _, server := range app.Servers {
 		if name == server.Name {
 			app.runSer(server)
@@ -46,7 +46,7 @@ func (app *App) runSer(server Server)  {
 		if server.Reboot {
 			defer func() {
 				time.Sleep(time.Second * server.RebootTime)
-				app.Reboot(server.Name)
+				app.rebootSer(server.Name)
 			}()
 		} else {
 			defer app.Wg.Done()
