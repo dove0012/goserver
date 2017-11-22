@@ -6,6 +6,7 @@ import (
 	"sync"
 	"runtime"
 	"time"
+	"utils"
 )
 
 type App struct {
@@ -25,6 +26,7 @@ func NewApp() *App {
 }
 
 func (app *App) Run() {
+	utils.Log.Info("App starting")
 	runtime.GOMAXPROCS(runtime.NumCPU())
 	for _, server := range app.Servers {
 		app.Wg.Add(1)
@@ -34,6 +36,7 @@ func (app *App) Run() {
 }
 
 func (app *App) rebootSer(name string) {
+	utils.Log.Info("server[" + name + "] rebooting")
 	for _, server := range app.Servers {
 		if name == server.Name {
 			app.runSer(server)
@@ -42,6 +45,7 @@ func (app *App) rebootSer(name string) {
 }
 
 func (app *App) runSer(server *Server) {
+	utils.Log.Info("server[" + server.Name + "] running")
 	go func() {
 		if server.Reboot {
 			defer func() {

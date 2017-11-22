@@ -3,6 +3,7 @@ package main
 import (
 	"cli"
 	"goserver/ser"
+	"utils"
 )
 
 const APP_VER = "1.0.0"
@@ -16,4 +17,5 @@ func main() {
 		ser.Reckon,
 	}
 	app.Run()
+	utils.Log.Info("App is over")
 }
