@@ -1,21 +1,21 @@
 package main
 
 import (
-	"cli"
-	"goserver/ser"
-	"utils"
+	"core"
+	"core/ser"
+	"utils/log"
 )
 
 const APP_VER = "1.0.0"
 
 func main() {
-	app := cli.NewApp()
+	app := core.NewApp()
 	app.Name = "goserver"
 	app.Usage = "run services"
 	app.Version = APP_VER
-	app.Servers = []*cli.Server{
+	app.Servers = []*core.Server{
 		ser.Reckon,
 	}
 	app.Run()
-	utils.Log.Info("App is over")
+	log.Info("App is over")
 }

@@ -1,4 +1,4 @@
-package cli
+package core
 
 type BeforeFunc func() error
 

@@ -1,15 +1,15 @@
 package ser
 
 import (
-	"cli"
+	"core"
 	"fmt"
-	"amqp"
-	"utils"
+	"utils/amqp"
+	"utils/config"
 )
 
 const NAME_RECKON = "reckon"
 
-var Reckon = &cli.Server{
+var Reckon = &core.Server{
 	Name:       NAME_RECKON,
 	Usage:      "Bigame reckon server",
 	Reboot:     true,
@@ -18,7 +18,7 @@ var Reckon = &cli.Server{
 }
 
 func runReckon() {
-	cfg := utils.NewCfg("config.ini")
+	cfg := config.NewCfg("config.ini")
 	cfg.Section = NAME_RECKON
 
 	mq := amqp.NewAmqp()
