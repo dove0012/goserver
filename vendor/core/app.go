@@ -5,6 +5,7 @@ import (
 	"path/filepath"
 	"sync"
 	"runtime"
+	mtime "utils/time"
 	"time"
 	"utils/log"
 )
@@ -47,13 +48,18 @@ func (app *App) rebootSer(name string) {
 func (app *App) runSer(server *Server) {
 	log.Info("server[" + server.Name + "] running")
 	go func() {
+		startTime := mtime.NowUnixMilli()
 		if server.Reboot {
 			defer func() {
+				log.TimeConsuming(startTime, "[" + server.Name + "] is over")
 				time.Sleep(time.Second * server.RebootTime)
 				app.rebootSer(server.Name)
 			}()
 		} else {
-			defer app.Wg.Done()
+			defer func() {
+				log.TimeConsuming(startTime, "[" + server.Name + "] is over")
+				app.Wg.Done()
+			}()
 		}
 		switch action := server.Action.(type) {
 		case func(app *App):

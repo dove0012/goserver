@@ -2,9 +2,10 @@ package json
 
 import (
 	j "encoding/json"
+	"utils/log"
 )
 
-func (j *Mjson) Unmarshal(data []byte, v interface{}) {
+func Unmarshal(data []byte, v interface{}) {
 	err := j.Unmarshal(data, v)
-	Log.Error(err, "json.Unmarshal error")
+	log.Error(err, "json.Unmarshal error")
 }

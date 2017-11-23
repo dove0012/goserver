@@ -5,6 +5,13 @@ import (
 	"fmt"
 	"utils/amqp"
 	"utils/config"
+	"utils/log"
+	"utils/json"
+	"utils/time"
+	"core/ser/reckon"
+	"core/ser/reckon/model"
+	"strconv"
+	"errors"
 )
 
 const NAME_RECKON = "reckon"
@@ -27,12 +34,22 @@ func runReckon() {
 	msgs := mq.Receive()
 	defer mq.Close()
 
-	fmt.Printf(" [*] Waiting for messages. To exit press CTRL+C")
+	log.Info("[*] Waiting for messages. To exit press CTRL+C")
 	for d := range msgs {
 		go func() {
-			fmt.Printf("Received a message: %s", d.Body)
-			fmt.Printf("Done")
-			d.Ack(false)
+			startTime := time.NowUnixMilli()
+			log.Info(fmt.Sprintf("Received a message: %s", d.Body))
+			handicap := model.Handicap{}
+			json.Unmarshal(d.Body, &handicap)
+			if handicap.Han_id > 0 {
+				defer func() {
+					log.TimeConsuming(startTime, "[handicap "+strconv.Itoa(handicap.Han_id)+"] is over")
+					d.Ack(false)
+				}()
+				reckon.NewReckon().Run(handicap.Han_id)
+			} else {
+				log.Error(errors.New("[handicap "+strconv.Itoa(handicap.Han_id)+"] is not gt zero error"), "")
+			}
 		}()
 	}
 }
