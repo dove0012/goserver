@@ -3,14 +3,14 @@ package ser
 import (
 	"core"
 	"fmt"
-	"utils/amqp"
-	"utils/config"
-	"utils/log"
-	"utils/json"
-	"utils/time"
+	"core/common/utils/amqp"
+	"core/common/utils/config"
+	"core/common/utils/log"
+	"core/common/utils/json"
+	"core/common/utils/time"
+	"core/common/utils/convert"
 	"core/ser/reckon"
-	"core/ser/reckon/model"
-	"strconv"
+	"core/common/model"
 	"errors"
 )
 
@@ -37,18 +37,18 @@ func runReckon() {
 	log.Info("[*] Waiting for messages. To exit press CTRL+C")
 	for d := range msgs {
 		go func() {
-			startTime := time.NowUnixMilli()
 			log.Info(fmt.Sprintf("Received a message: %s", d.Body))
-			handicap := model.Handicap{}
+			startTime := time.NowUnixMilli()
+			handicap := &model.Handicap{}
 			json.Unmarshal(d.Body, &handicap)
+			defer func() {
+				log.TimeConsuming(startTime, "[handicap "+convert.ToStr(handicap.Han_id)+"] is over")
+				d.Ack(false)
+			}()
 			if handicap.Han_id > 0 {
-				defer func() {
-					log.TimeConsuming(startTime, "[handicap "+strconv.Itoa(handicap.Han_id)+"] is over")
-					d.Ack(false)
-				}()
-				reckon.NewReckon().Run(handicap.Han_id)
+				reckon.NewReckon().Run(handicap)
 			} else {
-				log.Error(errors.New("[handicap "+strconv.Itoa(handicap.Han_id)+"] is not gt zero error"), "")
+				log.Error(errors.New("[handicap "+convert.ToStr(handicap.Han_id)+"] is not gt zero error"), "")
 			}
 		}()
 	}

@@ -1,18 +1,30 @@
 package reckon
 
 import (
-	"utils/log"
-	"strconv"
+	"core/common/utils/log"
+	"core/common/service"
+	"core/common/model"
+	"core/common/utils/convert"
+	"fmt"
 )
 
 type ReckonHandler struct {
-	Hand_id int64
+	handicap *model.Handicap
+	service *service.Mservice
 }
 
 func NewReckon() *ReckonHandler {
 	return &ReckonHandler{}
 }
 
-func (ReckonHandler *ReckonHandler) Run(han_id int64) {
-	log.Info("[Reckon " + strconv.FormatInt(han_id, 10) + "] starting")
+func (reckonHandler *ReckonHandler) Run(handicap *model.Handicap) {
+	log.Info("[Reckon " + convert.ToStr(handicap.Han_id) + "] starting")
+	reckonHandler.service = service.NewMservice()
+	defer reckonHandler.service.Mgo.Close()
+	reckonHandler.requestReckon(handicap)
+}
+
+func (reckonHandler *ReckonHandler) requestReckon(handicap *model.Handicap) {
+	reckonHandler.service.GetHandicapById(handicap.Han_id, &reckonHandler.handicap)
+	fmt.Printf("--------handicap:%#v", reckonHandler.handicap)
 }

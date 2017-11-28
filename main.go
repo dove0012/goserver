@@ -3,7 +3,7 @@ package main
 import (
 	"core"
 	"core/ser"
-	"utils/log"
+	"core/common/utils/log"
 )
 
 const APP_VER = "1.0.0"

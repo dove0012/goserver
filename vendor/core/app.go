@@ -1,13 +1,13 @@
 package core
 
 import (
-	"os"
+	mtime "core/common/utils/time"
+	"core/common/utils/log"
 	"path/filepath"
-	"sync"
 	"runtime"
-	mtime "utils/time"
 	"time"
-	"utils/log"
+	"sync"
+	"os"
 )
 
 type App struct {
@@ -51,13 +51,13 @@ func (app *App) runSer(server *Server) {
 		startTime := mtime.NowUnixMilli()
 		if server.Reboot {
 			defer func() {
-				log.TimeConsuming(startTime, "[" + server.Name + "] is over")
+				log.TimeConsuming(startTime, "["+server.Name+"] is over")
 				time.Sleep(time.Second * server.RebootTime)
 				app.rebootSer(server.Name)
 			}()
 		} else {
 			defer func() {
-				log.TimeConsuming(startTime, "[" + server.Name + "] is over")
+				log.TimeConsuming(startTime, "["+server.Name+"] is over")
 				app.Wg.Done()
 			}()
 		}
