@@ -39,16 +39,18 @@ func runReckon() {
 		go func() {
 			log.Info(fmt.Sprintf("Received a message: %s", d.Body))
 			startTime := time.NowUnixMilli()
-			handicap := &model.Handicap{}
-			json.Unmarshal(d.Body, &handicap)
+			msgs := &model.Msgs{}
+			json.Unmarshal(d.Body, &msgs)
+			r := reckon.NewReckonHandler()
 			defer func() {
-				log.TimeConsuming(startTime, "[handicap "+convert.ToStr(handicap.Han_id)+"] is over")
+				log.TimeConsuming(startTime, "[handicap "+convert.ToStr(msgs.Han_id)+"] is over")
 				d.Ack(false)
+				r.Destroy()
 			}()
-			if handicap.Han_id > 0 {
-				reckon.NewReckon().Run(handicap)
+			if msgs.Han_id > 0 {
+				r.Init().Run(msgs)
 			} else {
-				log.Error(errors.New("[handicap "+convert.ToStr(handicap.Han_id)+"] is not gt zero error"), "")
+				log.Error(errors.New("[handicap "+convert.ToStr(msgs.Han_id)+"] is not gt zero error"), "")
 			}
 		}()
 	}
