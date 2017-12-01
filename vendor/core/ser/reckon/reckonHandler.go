@@ -30,12 +30,13 @@ func (reckonHandler *ReckonHandler) Destroy() {
 
 func (reckonHandler *ReckonHandler) Run(msgs *model.Msgs) {
 	reckonHandler.requestReckon(msgs)
-	reckonHandler.service.GetHandicapById(msgs.Han_id, &reckonHandler.handicap)
+	log.Info("[Reckon " + convert.ToStr(msgs.Han_id) + "] starting")
 }
 
 func (reckonHandler *ReckonHandler) requestReckon(msgs *model.Msgs) {
+	reckonHandler.service.GetHandicapById(msgs.Han_id, &reckonHandler.handicap)
 	if reckonHandler.handicap.Han_id > 0 {
-		log.Info("[Reckon " + convert.ToStr(msgs.Han_id) + "] starting")
+
 	} else {
 		log.Error2Exit(errors.New("handicap["+convert.ToStr(msgs.Han_id)+"] not found in db"), "error")
 	}
