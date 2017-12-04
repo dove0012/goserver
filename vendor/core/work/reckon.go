@@ -1,4 +1,4 @@
-package ser
+package work
 
 import (
 	"core"
@@ -9,14 +9,14 @@ import (
 	"core/common/utils/json"
 	"core/common/utils/time"
 	"core/common/utils/convert"
-	"core/ser/reckon"
+	"core/work/reckon"
 	"core/common/model"
 	"errors"
 )
 
 const NAME_RECKON = "reckon"
 
-var Reckon = &core.Server{
+var Reckon = &core.Work{
 	Name:       NAME_RECKON,
 	Usage:      "Bigame reckon server",
 	Reboot:     true,

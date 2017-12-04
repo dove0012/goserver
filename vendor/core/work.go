@@ -2,7 +2,7 @@ package core
 
 import "time"
 
-type Server struct {
+type Work struct {
 	Name   string
 	Usage  string
 	Before BeforeFunc

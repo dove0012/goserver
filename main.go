@@ -2,7 +2,7 @@ package main
 
 import (
 	"core"
-	"core/ser"
+	"core/work"
 	"core/common/utils/log"
 )
 
@@ -13,8 +13,8 @@ func main() {
 	app.Name = "goserver"
 	app.Usage = "run services"
 	app.Version = APP_VER
-	app.Servers = []*core.Server{
-		ser.Reckon,
+	app.Servers = []*core.Work{
+		work.Reckon,
 	}
 	app.Run()
 	log.Info("App is over")

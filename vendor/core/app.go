@@ -14,7 +14,7 @@ type App struct {
 	Name    string
 	Usage   string
 	Version string
-	Servers []*Server
+	Servers []*Work
 	Wg      sync.WaitGroup
 }
 
@@ -45,7 +45,7 @@ func (app *App) rebootSer(name string) {
 	}
 }
 
-func (app *App) runSer(server *Server) {
+func (app *App) runSer(server *Work) {
 	log.Info("server[" + server.Name + "] running")
 	go func() {
 		startTime := mtime.NowUnixMilli()
