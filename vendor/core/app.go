@@ -14,7 +14,7 @@ type App struct {
 	Name    string
 	Usage   string
 	Version string
-	Servers []*Work
+	Works   []*Work
 	Wg      sync.WaitGroup
 }
 
@@ -29,7 +29,7 @@ func NewApp() *App {
 func (app *App) Run() {
 	log.Info("App starting")
 	runtime.GOMAXPROCS(runtime.NumCPU())
-	for _, server := range app.Servers {
+	for _, server := range app.Works {
 		app.Wg.Add(1)
 		app.runSer(server)
 	}
@@ -37,8 +37,8 @@ func (app *App) Run() {
 }
 
 func (app *App) rebootSer(name string) {
-	log.Info("server[" + name + "] rebooting")
-	for _, server := range app.Servers {
+	log.Info("work[" + name + "] rebooting")
+	for _, server := range app.Works {
 		if name == server.Name {
 			app.runSer(server)
 		}
@@ -46,7 +46,7 @@ func (app *App) rebootSer(name string) {
 }
 
 func (app *App) runSer(server *Work) {
-	log.Info("server[" + server.Name + "] running")
+	log.Info("work[" + server.Name + "] running")
 	go func() {
 		startTime := mtime.NowUnixMilli()
 		if server.Reboot {
@@ -67,7 +67,7 @@ func (app *App) runSer(server *Work) {
 		case func():
 			action()
 		default:
-			panic("server main func error.")
+			panic("work main func error.")
 		}
 	}()
 }
